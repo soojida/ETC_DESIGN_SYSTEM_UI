@@ -6,14 +6,14 @@ import reportWebVitals from "./reportWebVitals";
 // style
 import "./index.css";
 import { ThemeProvider } from "styled-components";
-import { GlobalStyle } from "styles/GlobalStyle";
-import theme from "styles/theme";
+import { GlobalStyle } from "src/styles/GlobalStyle";
+import theme from "src/styles/theme";
 
 // components
 import App from "./App";
 
 // font
-import { GlobalFont } from "styles/GlobalFont";
+import { GlobalFont } from "src/styles/GlobalFont";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

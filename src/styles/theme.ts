@@ -31,7 +31,10 @@ export const color = {
   // action
   error: "red",
 
+  // color
   primary: "#029cfd",
+  secondary: "#a626a4",
+  tertiary: "#63a35c",
 };
 export const theme = {
   color,
