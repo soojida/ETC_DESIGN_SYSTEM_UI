@@ -21,6 +21,10 @@ export interface ButtonProps {
   className?: string;
 }
 
+/**
+ * @desc 버튼 컴포넌트
+ * @returns {JSX.Element} 버튼 컴포넌트 반환
+ */
 const Button = ({
   children,
   onClick,

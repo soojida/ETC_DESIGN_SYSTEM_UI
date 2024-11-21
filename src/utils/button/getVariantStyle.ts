@@ -13,7 +13,7 @@ export const getVariantStyle = (variant: ButtonProps["variant"]) => {
     case "secondary":
       return css`
         color: ${({ theme }) => theme.color.white};
-        background: ${({ theme }) => theme.color.primary};
+        background: ${({ theme }) => theme.color.secondary};
       `;
     case "tertiary":
       return css`

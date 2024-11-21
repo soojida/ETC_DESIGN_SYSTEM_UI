@@ -1,14 +1,16 @@
 // lib
 import { fn } from "@storybook/test";
+import { Meta } from "@storybook/react/*";
+
+// style
+import styled from "styled-components";
 
 // icons
 import { MdModeEditOutline } from "react-icons/md";
 
 // components
-import { Meta } from "@storybook/react/*";
 import Button from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
-import styled from "styled-components";
 
 /**
  * 버튼(Button)은 동작(또는 일련의 동작)을 의미합니다. 버튼을 클릭하면 해당 비즈니스 로직이 트리거됩니다.
@@ -38,6 +40,7 @@ export default {
     disabled: false,
     onClick: fn(),
     icon: <MdModeEditOutline style={{ fontSize: "16px" }} />,
+    size: "medium",
   },
 } as Meta;
 
