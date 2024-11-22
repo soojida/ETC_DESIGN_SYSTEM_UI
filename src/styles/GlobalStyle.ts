@@ -19,4 +19,31 @@ ${reset}
     border: 0;
     outline: 0;
   }
+  .placeholer, ::placeholder {
+    color: ${({ theme }) => theme.color.gray300};
+  }
+   /* 비활성화 */
+  .disabled,
+  :disabled {
+    color: ${({ theme }) => theme.color.gray400};
+    background: ${({ theme }) => theme.color.gray100};
+    border-color: ${({ theme }) => theme.color.gray200};
+    cursor: not-allowed;
+
+    svg {
+      fill: #98a2b3;
+    }
+    &:hover {
+      color: ${({ theme }) => theme.color.gray400};
+      background: ${({ theme }) => theme.color.gray100};
+      border-color: ${({ theme }) => theme.color.gray200};
+      cursor: not-allowed;
+    }
+  }
+
+input {
+  &:focus-visible {
+    outline: 0;
+  }
+}
 `;
