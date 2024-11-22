@@ -21,6 +21,7 @@ ${reset}
   }
   .placeholer, ::placeholder {
     color: ${({ theme }) => theme.color.gray300};
+    font-size: 14px;
   }
    /* 비활성화 */
   .disabled,

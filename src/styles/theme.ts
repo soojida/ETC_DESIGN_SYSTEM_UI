@@ -29,7 +29,7 @@ export const color = {
   blueGray950: "#0d0f1c",
 
   // action
-  error: "red",
+  error: "#ff0000",
 
   // color
   primary: "#029cfd",
