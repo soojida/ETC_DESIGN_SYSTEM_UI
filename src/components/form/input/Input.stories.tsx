@@ -8,7 +8,6 @@ import { TbSearch } from "react-icons/tb";
 // components
 import { Input } from "./Input";
 import Button from "src/components/button/Button";
-import { Placeholder } from "storybook/internal/components";
 
 /**
  * 인풋(Input)은 사용자 데이터를 입력할 수 있는 공간을 제공해주는 요소입니다. 버튼 클릭 또는 키보드 엔터 액션을 통해 해당 비즈니스 로직을 호출됩니다.
