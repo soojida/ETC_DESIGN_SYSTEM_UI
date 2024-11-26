@@ -11,6 +11,7 @@ ${reset}
     font-family: -apple-system,BlinkMacSystemFont,helvetica,"Pretendard","Apple SD Gothic Neo",sans-serif;
   }
   body {
+    color: ${({ theme }) => theme.color.gray900};
     font-size: 14px;
     font-weight: 400;
     font-family: -apple-system,BlinkMacSystemFont,helvetica,"Pretendard","Apple SD Gothic Neo",sans-serif;

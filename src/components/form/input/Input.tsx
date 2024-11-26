@@ -28,10 +28,9 @@ interface InputProps {
   errorMessage?: string;
   // 글자수 입력값 제한
   maxLength?: number;
-  // isMaxLength?: boolean;
   // 글자수 입력 최소값
   min?: number;
-  /// 글자수 입력 최고값
+  /// 글자수 입력 최대값
   max?: number;
 }
 
