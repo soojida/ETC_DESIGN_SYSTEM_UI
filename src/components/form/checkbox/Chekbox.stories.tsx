@@ -4,7 +4,6 @@ import { Meta } from "@storybook/react/*";
 
 // components
 import { Checkbox } from "./Checkbox";
-import { Radio } from "../radio/Radio";
 
 /**
  * 폼(Form)은 Checkbox, Radio, Switch와 같이 선택 옵션들을 제어할 수 있도록 돕는 요소 입니다.

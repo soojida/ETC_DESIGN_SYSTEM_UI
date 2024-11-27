@@ -25,24 +25,7 @@ export const ButtonStyle = styled.button<ButtonProps>`
   &:focus {
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
   }
-  /* 비활성화 */
-  &:disabled {
-    color: ${({ theme }) => theme.color.gray400};
-    background: ${({ theme }) => theme.color.gray200};
-    border-color: ${({ theme }) => theme.color.gray200};
-    cursor: not-allowed;
-
-    svg {
-      fill: #98a2b3;
-    }
-    &:hover {
-      color: ${({ theme }) => theme.color.gray400};
-      background: ${({ theme }) => theme.color.gray200};
-      border-color: ${({ theme }) => theme.color.gray200};
-      cursor: not-allowed;
-    }
-  }
-
+ 
   &.icon {
     ${({ size }) => getIconSizeStyle(size)}
   }
