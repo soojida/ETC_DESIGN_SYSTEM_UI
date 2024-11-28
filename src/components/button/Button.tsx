@@ -19,6 +19,8 @@ export interface ButtonProps {
   icon?: React.ReactNode;
   // 클래스명
   className?: string;
+  // 인라인 스타일 커스텀
+  style?: React.CSSProperties;
 }
 
 /**
@@ -35,6 +37,7 @@ const Button = ({
   disabled,
   icon,
   className,
+  style,
 }: ButtonProps): JSX.Element => (
   <ButtonStyle
     className={className}
@@ -44,6 +47,7 @@ const Button = ({
     position={position}
     disabled={disabled}
     onClick={onClick}
+    style={style}
   >
     {icon}
     {children}
