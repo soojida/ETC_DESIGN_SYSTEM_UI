@@ -6,6 +6,8 @@ import { fn } from "@storybook/test";
 import { HorizontalTable } from "./HorizontalTable";
 import {
   horizontalTableBody,
+  horizontalTableChilrenHeader,
+  horizontalTableGrandHeader,
   horizontalTableHeader,
 } from "src/constants/table/horizontalTableConst";
 import Button from "../button/Button";
@@ -37,6 +39,9 @@ export default {
   },
 } as Meta;
 
+/**
+ * 1단계(2depth) 기본 테이블이 필요한 경우 사용합니다.
+ */
 export const BaseHorizontalTable = (args: any) => (
   <HorizontalTable
     headers={horizontalTableHeader}
@@ -46,8 +51,14 @@ export const BaseHorizontalTable = (args: any) => (
 );
 
 /**
- * @param args
- * @returns key 값을 활용하여, 데이터 커스텀 필요 시 사용합니다.
+ * 데이터가 없이 표출되는 테이블의 경우 사용합니다.
+ */
+export const NoDataHorizontalTable = (args: any) => (
+  <HorizontalTable headers={horizontalTableHeader} items={""} {...args} />
+);
+
+/**
+ * 2단계(2depth) 확장 셀의이 필요한 경우 사용하며, renderBodyRows를 props를 사용하여 셀의 커스텀이 가능합니다.
  */
 export const CustomHorizontalTable = (args: any) => {
   const renderBodyRows = (item: any, key: any) => {
@@ -71,9 +82,30 @@ export const CustomHorizontalTable = (args: any) => {
           <col />
         </>
       }
-      headers={horizontalTableHeader}
+      headers={horizontalTableChilrenHeader}
       items={horizontalTableBody}
       renderBodyRows={renderBodyRows}
+      {...args}
+    />
+  );
+};
+
+/**
+ * 3단계(3depth) 확장 셀이 필요한 경우 사용합니다.
+ */
+export const DeepHorizontalTable = (args: any) => {
+  return (
+    <HorizontalTable
+      colgroup={
+        <>
+          <col width="30%" />
+          <col />
+          <col />
+          <col />
+        </>
+      }
+      headers={horizontalTableGrandHeader}
+      items={horizontalTableBody}
       {...args}
     />
   );

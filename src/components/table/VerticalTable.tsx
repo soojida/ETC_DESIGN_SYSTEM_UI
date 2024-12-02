@@ -8,6 +8,7 @@ import { useTable } from "src/hooks/table/useTable";
 import styled from "styled-components";
 
 export interface HeaderItem {
+  grandChild: any;
   key: any | string[];
   value: React.ReactNode;
   colspan?: number;
@@ -50,7 +51,9 @@ export const VerticalTable = ({
   headerAlign = "center",
   contentsAlign = "center",
 }: VerticalTableProps) => {
-  const { headerCell, headerKeys } = useTable({ headers });
+  const { childrenCell, grandChildCell, headerKeys } = useTable({
+    headers,
+  });
 
   const renderVerticalContents = (headers: HeaderItem[]) => {
     return (
@@ -59,21 +62,35 @@ export const VerticalTable = ({
           return header.children !== undefined ? (
             // 1) 헤더 영역의 하위 자식 요소가 있는 경우
             <React.Fragment key={idx}>
+              {/* 첫번째(1depth) 단계 셀 */}
               <tr>
                 <th
                   align={headerAlign}
                   className="main"
-                  rowSpan={header.children.length + 1}
+                  rowSpan={
+                    grandChildCell.isGrand
+                      ? grandChildCell.cell + 3
+                      : childrenCell.cell + 1
+                  }
                   onClick={() => onClickHeader && onClickHeader(header)}
                 >
                   {header.value}
                 </th>
               </tr>
+              {/* 두번째(2epth) 단계(children) 헤더 셀 */}
               {header.children.map((child) => (
                 <tr key={child.key}>
                   <th
                     align={headerAlign}
                     onClick={() => onClickHeader && onClickHeader(child)}
+                    rowSpan={
+                      child.grandChild
+                        ? grandChildCell.cell + 1
+                        : childrenCell.cell - 1
+                    }
+                    colSpan={
+                      child.grandChild === undefined ? childrenCell.cell : 1
+                    }
                   >
                     {child.value}
                   </th>
@@ -95,13 +112,34 @@ export const VerticalTable = ({
                   })}
                 </tr>
               ))}
+              {/* 세번째(3depth) 단계(grandchild) 헤더 셀 */}
+              {headers.flatMap((header) =>
+                header.children
+                  ? header.children.map((child) =>
+                      child.grandChild
+                        ? child.grandChild.map((grand: any) => {
+                            return (
+                              <tr key={grand.key}>
+                                <th>{grand.value}</th>
+                                <td>{grand.value}</td>
+                              </tr>
+                            );
+                          })
+                        : []
+                    )
+                  : []
+              )}
             </React.Fragment>
           ) : (
             // 2) 헤더 영역의 하위 자식 요소가 없는 경우
             <tr key={idx}>
               <th
                 align={headerAlign}
-                colSpan={headerCell}
+                colSpan={
+                  grandChildCell.isGrand
+                    ? grandChildCell.cell + 1
+                    : childrenCell.cell + 1
+                }
                 className="main"
                 onClick={() => onClickHeader && onClickHeader(header)}
               >

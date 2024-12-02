@@ -5,8 +5,10 @@ import { fn } from "@storybook/test";
 // components
 import { VerticalTable } from "./VerticalTable";
 import {
+  verticalTablChildrenHeader,
   verticalTableBody,
   verticalTableHeader,
+  verticalTablGrandHeader,
 } from "src/constants/table/verticalTableConst";
 import Button from "../button/Button";
 
@@ -37,8 +39,18 @@ export default {
   },
 } as Meta;
 
+/**
+ * 1단계(2depth) 기본 테이블이 필요한 경우 사용합니다.
+ */
 export const BaseVerticalTable = (args: any) => (
   <VerticalTable
+    colgroup={
+      <>
+        <col width="15%" />
+        <col width="15%" />
+        <col width="25%" />
+      </>
+    }
     headers={verticalTableHeader}
     items={verticalTableBody}
     {...args}
@@ -46,8 +58,7 @@ export const BaseVerticalTable = (args: any) => (
 );
 
 /**
- * @param args
- * @returns key 값을 활용하여, 데이터 커스텀 필요 시 사용합니다.
+ * 2단계(2depth) 확장 셀의이 필요한 경우 사용하며, renderBodyRows를 props를 사용하여 셀의 커스텀이 가능합니다.
  */
 export const CustomVerticalTable = (args: any) => {
   const renderBodyRows = (item: any, key: any) => {
@@ -64,9 +75,37 @@ export const CustomVerticalTable = (args: any) => {
   };
   return (
     <VerticalTable
-      headers={verticalTableHeader}
+      colgroup={
+        <>
+          <col width="15%" />
+          <col width="15%" />
+          <col width="25%" />
+        </>
+      }
+      headers={verticalTablChildrenHeader}
       items={verticalTableBody}
       renderBodyRows={renderBodyRows}
+      {...args}
+    />
+  );
+};
+
+/**
+ * 3단계(3depth) 확장 셀이 필요한 경우 사용합니다.
+ */
+export const DeepVerticalTable = (args: any) => {
+  return (
+    <VerticalTable
+      colgroup={
+        <>
+          <col width="15%" />
+          <col width="15%" />
+          <col width="15%" />
+          <col width="35%" />
+        </>
+      }
+      headers={verticalTablGrandHeader}
+      items={verticalTableBody}
       {...args}
     />
   );

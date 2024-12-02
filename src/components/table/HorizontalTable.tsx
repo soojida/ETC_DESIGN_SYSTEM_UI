@@ -8,6 +8,7 @@ import { useTable } from "src/hooks/table/useTable";
 import styled from "styled-components";
 
 interface HeaderItem {
+  grandChild?: HeaderItem[];
   key: any | string[];
   value: React.ReactNode;
   colspan?: number;
@@ -53,19 +54,26 @@ export const HorizontalTable = ({
   headerAlign = "center",
   contentsAlign = "center",
 }: HorizontalTableProps) => {
-  const { headerCell, contentsCell, headerKeys } = useTable({ headers });
+  const { childrenCell, grandChildCell, headerKeys } = useTable({
+    headers,
+  });
 
   const renderHorizontalHeader = (headers: HeaderItem[]) => {
     return (
       <>
+        {/* 첫번째(1depth) 단계 헤더 셀 */}
         <tr>
-          {headers.map((header) =>
-            header.children ? (
+          {headers.map((header) => {
+            return header.children ? (
               // 1) 헤더 영역의 하위 자식 요소가 있는 경우
               <th
                 key={header.key}
                 align={headerAlign}
-                colSpan={header.children.length}
+                colSpan={
+                  grandChildCell.isGrand
+                    ? grandChildCell.cell + 1
+                    : childrenCell.cell
+                }
                 onClick={() => onClickHeader && onClickHeader(header)}
               >
                 {header.value}
@@ -75,30 +83,49 @@ export const HorizontalTable = ({
               <th
                 key={header.key}
                 align={headerAlign}
-                rowSpan={headerCell}
+                rowSpan={
+                  grandChildCell.isGrand
+                    ? grandChildCell.cell + 1
+                    : childrenCell.cell + 1
+                }
                 onClick={() => onClickHeader && onClickHeader(header)}
               >
                 {header.value}
               </th>
-            )
-          )}
+            );
+          })}
         </tr>
+        {/* 두번째(2epth) 단계(children) 헤더 셀 */}
         <tr>
           {headers.flatMap((header) =>
             header.children
-              ? header.children.map((child) => {
-                  return (
-                    child.value !== "" && (
-                      <th
-                        key={child.key}
-                        align={headerAlign}
-                        onClick={() => onClickHeader && onClickHeader(child)}
-                      >
-                        {child.value}
-                      </th>
-                    )
-                  );
-                })
+              ? header.children.map((child) =>
+                  child.grandChild ? (
+                    // 1) 두번째 헤더 영역의 하위 자식 요소가 있는 경우
+                    <th key={child.key} colSpan={grandChildCell.cell}>
+                      {child.value}
+                    </th>
+                  ) : (
+                    // 2) 두번째 헤더 영역의 하위 자식 요소가 없는 경우
+                    <th key={child.key} rowSpan={grandChildCell.cell}>
+                      {child.value}
+                    </th>
+                  )
+                )
+              : []
+          )}
+        </tr>
+        {/* 세번째(3depth) 단계(grandchild) 헤더 셀 */}
+        <tr className="grand">
+          {headers.flatMap((header) =>
+            header.children
+              ? header.children.map((child) =>
+                  child.grandChild
+                    ? child.grandChild.map((grand: any) => (
+                        <th key={grand.key}>{grand.value}</th>
+                      ))
+                    : []
+                )
               : []
           )}
         </tr>
@@ -110,21 +137,23 @@ export const HorizontalTable = ({
       // 1) 컨텐츠(데이터)가 있는 경우
       items.map((item) => (
         <tr key={item.key}>
-          {headerKeys.map((key: any) => (
-            <td
-              key={key}
-              align={contentsAlign}
-              onClick={() => onClickRow && onClickRow(item)}
-            >
-              {renderBodyRows ? renderBodyRows(item[key], key) : item[key]}
-            </td>
-          ))}
+          {headerKeys.map((key: any) => {
+            return (
+              <td
+                key={key}
+                align={contentsAlign}
+                onClick={() => onClickRow && onClickRow(item)}
+              >
+                {renderBodyRows ? renderBodyRows(item[key], key) : item[key]}
+              </td>
+            );
+          })}
         </tr>
       ))
     ) : (
       // 2) 컨텐츠(데이터)가 없는 경우
       <tr>
-        <td align="center" colSpan={contentsCell}>
+        <td align="center" colSpan={headerKeys.length}>
           {noDataMessage}
         </td>
       </tr>
@@ -184,6 +213,12 @@ const Thead = styled.thead<{ headerAlign: string }>`
       border-top: 1px solid ${({ theme }) => theme.color.gray200};
 
       &:not(:first-child) {
+        border-left: 1px solid ${({ theme }) => theme.color.gray200};
+      }
+    }
+    /* 세번째 단계(grand)가 있는 경우의 스타일 */
+    &.grand {
+      th {
         border-left: 1px solid ${({ theme }) => theme.color.gray200};
       }
     }
