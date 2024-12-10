@@ -12,7 +12,7 @@ interface ButtonGroupProps {
   className?: string;
 }
 
-export const ButtonGroup = ({ buttons, className }: ButtonGroupProps) => {
+const ButtonGroup = ({ buttons, className }: ButtonGroupProps) => {
   return (
     <ButtonContainer
       className={
@@ -27,6 +27,8 @@ export const ButtonGroup = ({ buttons, className }: ButtonGroupProps) => {
     </ButtonContainer>
   );
 };
+
+export default React.memo(ButtonGroup);
 
 const ButtonContainer = styled.div`
   display: flex;

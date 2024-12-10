@@ -8,8 +8,8 @@ import { useModalStore } from "src/stores/useModalStore";
 // components
 import { Modal } from "./Modal";
 import Button from "../button/Button";
-import { ButtonGroup } from "../button/ButtonGroup";
 import { SystemModal } from "./SystemModal";
+import ButtonGroup from "../button/ButtonGroup";
 
 /**
  * 모달(Modal)은 사용자 경험의 흐름을 막고 꼭 필요한 것을 결정하게 하거나 되돌릴 수 없는 결정을 확인 할 때 사용하는 요소입니다.
