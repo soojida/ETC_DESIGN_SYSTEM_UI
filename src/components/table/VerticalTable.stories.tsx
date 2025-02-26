@@ -48,7 +48,6 @@ export const BaseVerticalTable = (args: any) => (
       <>
         <col width="15%" />
         <col width="15%" />
-        <col width="25%" />
       </>
     }
     headers={verticalTableHeader}

@@ -1,82 +1,59 @@
 // lib
 import { useEffect, useState } from "react";
 
-// components
-import { HeaderItem } from "src/components/table/VerticalTable";
-
 export const useTable = ({ headers }: any) => {
-  const [headerCell, setHeaderCell] = useState<number>(0); // 첫번째 헤더 병합
-  const [childrenCell, setChildrenCell] = useState<{
-    isChild: boolean;
-    cell: number;
-  }>({
-    isChild: false,
-    cell: 1,
-  }); // 두번째 헤더 병합
-  const [grandChildCell, setGrandChildrenCell] = useState<{
-    isGrand: boolean;
-    cell: number;
-  }>({
-    isGrand: false,
-    cell: 1,
-  }); // 세번째 헤더 병합
+  const [headerCells, setHeaderCells] = useState<{ [key: string]: number }>({}); // 각 헤더의 colspan
+  const [childrenCells, setChildrenCells] = useState<{ [key: string]: number }>(
+    {}
+  ); // 각 children의 rowspan
+  const [grandChildCells, setGrandChildCells] = useState<{
+    [key: string]: number;
+  }>({}); // 각 grandchild의 rowspan
+
+  // grandChildCount 및 childrenCount 상태
+  const [grandChildCount, setGrandChildCount] = useState(0);
+  const [childrenCount, setChildrenCount] = useState(0);
 
   useEffect(() => {
-    // 헤더의 자식 항목 개수를 모두 합산하는 함수
-    const calcRowLength = (headers: HeaderItem[]) => {
-      return headers.reduce((acc, header) => {
-        if (header.children) {
-          return acc + header.children.length; // 자식 항목의 개수 더하기
-        }
-        return acc;
-      }, 0);
-    };
+    const headerMap: { [key: string]: number } = {};
+    const childrenMap: { [key: string]: number } = {};
+    const grandChildMap: { [key: string]: number } = {};
+    let totalGrandChildCount = 0; // grandChild의 총 개수
+    let totalChildrenCount = 0; // children의 총 개수
+
+    headers.forEach((header: any) => {
+      const childrenCount = header.children ? header.children.length : 0;
+      totalChildrenCount += childrenCount; // children 개수 누적
+      let totalGrandChildren = 0;
+
+      if (header.children) {
+        header.children.forEach((child: any) => {
+          const grandChildCount = child.grandChild
+            ? child.grandChild.length
+            : 0;
+          totalGrandChildren += grandChildCount;
+          totalGrandChildCount += grandChildCount; // grandChild 개수 누적
+          grandChildMap[child.key] = grandChildCount || 1;
+        });
+
+        childrenMap[header.key] =
+          totalGrandChildren > 0 ? totalGrandChildren + 1 : childrenCount || 1;
+      }
+      headerMap[header.key] =
+        totalGrandChildren > 0 ? totalGrandChildren : childrenCount || 1;
+    });
+
+    setHeaderCells(headerMap);
+    setChildrenCells(childrenMap);
+    setGrandChildCells(grandChildMap);
 
     // 상태 업데이트
-    const totalRowLength = calcRowLength(headers);
-    setHeaderCell(totalRowLength); // 총 자식 항목 개수를 상태로 저장
-
-    headers.forEach((header: HeaderItem) => {
-      if (header.children) {
-        let totalChildrenCell = 1;
-        totalChildrenCell = header.children.length;
-
-        // children (2depth) 객체가 있는 경우 개수 저장
-        setChildrenCell((prev) => ({
-          ...prev,
-          isChild: true,
-          cell: totalChildrenCell,
-        }));
-        // grandChild (3depth) 객체 판단 여부 저장
-        setGrandChildrenCell((prev) => ({
-          ...prev,
-          isGrand: false,
-        }));
-
-        header.children.forEach((child) => {
-          if (child.grandChild) {
-            let totalGrandChildCell = 1;
-            totalGrandChildCell = child.grandChild.length;
-
-            // grandChild (3depth) 객체가 있는 경우 개수 저장
-            setGrandChildrenCell((prev) => ({
-              ...prev,
-              isGrand: true,
-              cell: totalGrandChildCell,
-            }));
-            // children (2depth) 객체 판단 여부 저장
-            setChildrenCell((prev) => ({
-              ...prev,
-              isChild: false,
-            }));
-          }
-        });
-      }
-    });
+    setGrandChildCount(totalGrandChildCount);
+    setChildrenCount(totalChildrenCount);
   }, [headers]); // headers가 변경될 때마다 재계산
 
   // 헤더 key 추출
-  const headerKeys = headers.flatMap((header: any) =>
+  const headerKeys: string[] = headers.flatMap((header: any) =>
     header.children
       ? header.children.flatMap((child: any) =>
           child.grandChild
@@ -87,9 +64,11 @@ export const useTable = ({ headers }: any) => {
   );
 
   return {
-    headerCell,
-    childrenCell,
-    grandChildCell,
+    headerCells,
+    childrenCells,
+    grandChildCells,
     headerKeys,
+    grandChildCount, // 추가
+    childrenCount, // 추가
   };
 };

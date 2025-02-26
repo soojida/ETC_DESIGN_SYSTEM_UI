@@ -10,7 +10,7 @@ import { Label } from "./Label";
  */
 export default {
   title: "Components/Label",
-  components: Label,
+  component: Label,
   parameters: {
     componentSubTitle: "라벨 컴포넌트",
   },

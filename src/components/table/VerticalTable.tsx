@@ -51,121 +51,104 @@ export const VerticalTable = ({
   headerAlign = "center",
   contentsAlign = "center",
 }: VerticalTableProps) => {
-  const { childrenCell, grandChildCell, headerKeys } = useTable({
+  const {
+    headerCells,
+    childrenCells,
+    grandChildCells,
+    headerKeys,
+    grandChildCount,
+    childrenCount,
+  } = useTable({
     headers,
   });
 
+  console.log(
+    grandChildCount,
+    "grandChildCount",
+    childrenCount,
+    "childrenCount"
+  );
+
   const renderVerticalContents = (headers: HeaderItem[]) => {
-    return (
-      <>
-        {headers.map((header, idx) => {
-          return header.children !== undefined ? (
-            // 1) 헤더 영역의 하위 자식 요소가 있는 경우
-            <React.Fragment key={idx}>
-              {/* 첫번째(1depth) 단계 셀 */}
-              <tr>
-                <th
-                  align={headerAlign}
-                  className="main"
-                  rowSpan={
-                    grandChildCell.isGrand
-                      ? grandChildCell.cell + 3
-                      : childrenCell.cell + 1
-                  }
-                  onClick={() => onClickHeader && onClickHeader(header)}
+    return headers.map((header: any) => (
+      <React.Fragment key={header.key}>
+        {/* 첫번째(1depth) 단계 헤더 셀 */}
+        <tr>
+          <th
+            align={headerAlign}
+            rowSpan={
+              header.children ? childrenCount + grandChildCount + 1 : undefined
+            }
+            colSpan={!header.children ? childrenCount + 1 : undefined}
+            onClick={() => onClickHeader?.(header)}
+          >
+            {header.value}
+          </th>
+          {header.children
+            ? null
+            : items.map((item) => (
+                <td
+                  key={header.key}
+                  align={contentsAlign}
+                  onClick={() => onClickRow?.(item)}
                 >
-                  {header.value}
-                </th>
-              </tr>
-              {/* 두번째(2epth) 단계(children) 헤더 셀 */}
-              {header.children.map((child) => (
-                <tr key={child.key}>
-                  <th
-                    align={headerAlign}
-                    onClick={() => onClickHeader && onClickHeader(child)}
-                    rowSpan={
-                      child.grandChild
-                        ? grandChildCell.cell + 1
-                        : childrenCell.cell - 1
-                    }
-                    colSpan={
-                      child.grandChild === undefined ? childrenCell.cell : 1
-                    }
-                  >
-                    {child.value}
-                  </th>
-                  {items?.map((item) => {
-                    return headerKeys.map(
-                      (key: any) =>
-                        child.key === key && (
-                          <td
-                            align={contentsAlign}
-                            key={key}
-                            onClick={() => onClickRow && onClickRow(item)}
-                          >
-                            {renderBodyRows
-                              ? renderBodyRows(item[key], key)
-                              : item[key]}
-                          </td>
-                        )
-                    );
-                  })}
-                </tr>
+                  {renderBodyRows
+                    ? renderBodyRows(item[header.key], header.key)
+                    : item[header.key]}
+                </td>
               ))}
-              {/* 세번째(3depth) 단계(grandchild) 헤더 셀 */}
-              {headers.flatMap((header) =>
-                header.children
-                  ? header.children.map((child) =>
-                      child.grandChild
-                        ? child.grandChild.map((grand: any) => {
-                            return (
-                              <tr key={grand.key}>
-                                <th>{grand.value}</th>
-                                <td>{grand.value}</td>
-                              </tr>
-                            );
-                          })
-                        : []
-                    )
-                  : []
-              )}
-            </React.Fragment>
-          ) : (
-            // 2) 헤더 영역의 하위 자식 요소가 없는 경우
-            <tr key={idx}>
-              <th
-                align={headerAlign}
-                colSpan={
-                  grandChildCell.isGrand
-                    ? grandChildCell.cell + 1
-                    : childrenCell.cell + 1
-                }
-                className="main"
-                onClick={() => onClickHeader && onClickHeader(header)}
-              >
-                {header.value}
+        </tr>
+        {/* 두번째(2epth) 단계(children) 헤더 셀 */}
+        {header.children?.map((child: any) => (
+          <tr key={child.key}>
+            <th
+              align={headerAlign}
+              className={child.grandChild ? "tomato" : "noneTomato"}
+              rowSpan={child.grandChild ? childrenCount + 1 : undefined}
+              colSpan={!child.grandChild ? childrenCount : undefined}
+              onClick={() => onClickHeader?.(child)}
+            >
+              {console.log(child.grandChild, "child.grandChild")}
+              {child.value}
+            </th>
+            {child.grandChild
+              ? null
+              : items.map((item) => (
+                  <td
+                    key={child.key}
+                    align={contentsAlign}
+                    onClick={() => onClickRow?.(item)}
+                  >
+                    {renderBodyRows
+                      ? renderBodyRows(item[child.key], child.key)
+                      : item[child.key]}
+                  </td>
+                ))}
+          </tr>
+        ))}
+        {/* 세번째(3depth) 단계(grandchild) 헤더 셀 */}
+        {header.children?.flatMap((child: any) =>
+          child.grandChild?.map((grand: any) => (
+            <tr key={grand.key}>
+              <th align={headerAlign} className="grandTomato">
+                {grand.value}
               </th>
-              {items?.map((item) => {
-                return headerKeys.map(
-                  (key: any) =>
-                    header.key === key && (
-                      <td
-                        align={contentsAlign}
-                        key={key}
-                        onClick={() => onClickRow && onClickRow(key)}
-                      >
-                        {renderBodyRows
-                          ? renderBodyRows(item[key], key)
-                          : item[key]}
-                      </td>
-                    )
-                );
-              })}
+              {items.map((item) => (
+                <td
+                  key={grand.key}
+                  align={contentsAlign}
+                  onClick={() => onClickRow?.(item)}
+                >
+                  {renderBodyRows
+                    ? renderBodyRows(item[grand.key], grand.key)
+                    : item[grand.key]}
+                </td>
+              ))}
             </tr>
-          );
-        })}
-      </>
-    );
+          ))
+        )}
+      </React.Fragment>
+    ));
   };
   return (
     <VerticalTableScroll>
@@ -198,8 +181,8 @@ const Tbody = styled.tbody<{ headerAlign: string; contentsAlign: string }>`
         props.headerAlign === "center"
           ? "center"
           : props.headerAlign === "left"
-          ? "left"
-          : "right"};
+            ? "left"
+            : "right"};
       background: ${({ theme }) => theme.color.gray100};
       border-right: 1px solid ${({ theme }) => theme.color.gray200};
     }
@@ -209,8 +192,8 @@ const Tbody = styled.tbody<{ headerAlign: string; contentsAlign: string }>`
         props.contentsAlign === "center"
           ? "center"
           : props.contentsAlign === "left"
-          ? "left"
-          : "right"};
+            ? "left"
+            : "right"};
     }
 
     th,

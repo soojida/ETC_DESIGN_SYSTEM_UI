@@ -59,6 +59,21 @@ export const horizontalTableGrandHeader = [
     key: "third",
     value: "3",
   },
+  {
+    key: "four",
+    value: "4",
+    children: [
+      {
+        key: "four_second_children",
+        value: "4-2",
+        grandChild: [
+          { key: "four_first_grandchild", value: "4-2-1" },
+          { key: "four_second_grandchild", value: "4-2-2" },
+          { key: "four_third_grandchild", value: "4-2-3" },
+        ],
+      },
+    ],
+  },
 ];
 
 export const horizontalTableBody = [
@@ -70,5 +85,11 @@ export const horizontalTableBody = [
     first: "1",
     second: "2",
     third: "3",
+    four: "4",
+    four_first_children: "4-1",
+    four_second_children: "4-2",
+    four_first_grandchild: "4-2-1",
+    four_second_grandchild: "4-2-2",
+    four_third_grandchild: "4-2-3",
   },
 ];

@@ -17,7 +17,7 @@ interface HeaderItem {
 interface DataItem {
   [key: string]: React.ReactNode | any;
 }
-interface HorizontalTableProps {
+export interface HorizontalTableProps {
   // 클래스명
   className?: string;
   // 테이블 푸터 내용
@@ -54,9 +54,10 @@ export const HorizontalTable = ({
   headerAlign = "center",
   contentsAlign = "center",
 }: HorizontalTableProps) => {
-  const { childrenCell, grandChildCell, headerKeys } = useTable({
-    headers,
-  });
+  const { headerKeys, childrenCells, grandChildCells, childrenCount } =
+    useTable({
+      headers,
+    });
 
   const renderHorizontalHeader = (headers: HeaderItem[]) => {
     return (
@@ -69,11 +70,7 @@ export const HorizontalTable = ({
               <th
                 key={header.key}
                 align={headerAlign}
-                colSpan={
-                  grandChildCell.isGrand
-                    ? grandChildCell.cell + 1
-                    : childrenCell.cell
-                }
+                colSpan={header.children ? childrenCount || 1 : undefined}
                 onClick={() => onClickHeader && onClickHeader(header)}
               >
                 {header.value}
@@ -83,11 +80,7 @@ export const HorizontalTable = ({
               <th
                 key={header.key}
                 align={headerAlign}
-                rowSpan={
-                  grandChildCell.isGrand
-                    ? grandChildCell.cell + 1
-                    : childrenCell.cell + 1
-                }
+                rowSpan={3}
                 onClick={() => onClickHeader && onClickHeader(header)}
               >
                 {header.value}
@@ -102,12 +95,15 @@ export const HorizontalTable = ({
               ? header.children.map((child) =>
                   child.grandChild ? (
                     // 1) 두번째 헤더 영역의 하위 자식 요소가 있는 경우
-                    <th key={child.key} colSpan={grandChildCell.cell}>
+                    <th
+                      key={child.key}
+                      colSpan={grandChildCells[child.key] || 1}
+                    >
                       {child.value}
                     </th>
                   ) : (
                     // 2) 두번째 헤더 영역의 하위 자식 요소가 없는 경우
-                    <th key={child.key} rowSpan={grandChildCell.cell}>
+                    <th key={child.key} rowSpan={childrenCells[header.key]}>
                       {child.value}
                     </th>
                   )
@@ -208,8 +204,8 @@ const Thead = styled.thead<{ headerAlign: string }>`
         props.headerAlign === "center"
           ? "center"
           : props.headerAlign === "left"
-          ? "left"
-          : "right"};
+            ? "left"
+            : "right"};
       border-top: 1px solid ${({ theme }) => theme.color.gray200};
 
       &:not(:first-child) {
@@ -236,8 +232,8 @@ const Tbody = styled.tbody<{ contentsAlign: string }>`
         props.contentsAlign === "center"
           ? "center"
           : props.contentsAlign === "left"
-          ? "left"
-          : "right"};
+            ? "left"
+            : "right"};
       border-top: 1px solid ${({ theme }) => theme.color.gray200};
 
       &:not(:first-child) {

@@ -24,6 +24,7 @@ yarn-error.log*
 
 *storybook.log
 
+src/stories/
 
 # etc
 **/*copy*
