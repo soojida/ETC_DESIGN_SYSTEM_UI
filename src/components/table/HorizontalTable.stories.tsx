@@ -32,6 +32,7 @@ export default {
     onClickRow: { action: "onClickRow" },
   },
   args: {
+    checkbox: true,
     onClickHeader: fn(),
     onClickRow: fn(),
     headerAlign: "center",
