@@ -64,11 +64,11 @@ export const HorizontalTable = ({
       <>
         {/* 첫번째(1depth) 단계 헤더 셀 */}
         <tr>
-          {headers.map((header) => {
+          {headers.map((header, index) => {
             return header.children ? (
               // 1) 헤더 영역의 하위 자식 요소가 있는 경우
               <th
-                key={header.key}
+                key={`${header.key}-${index}`}
                 align={headerAlign}
                 colSpan={header.children ? childrenCount || 1 : undefined}
                 onClick={() => onClickHeader && onClickHeader(header)}
@@ -78,7 +78,7 @@ export const HorizontalTable = ({
             ) : (
               // 2) 헤더 영역의 하위 자식 요소가 없는 경우
               <th
-                key={header.key}
+                key={`${header.key}-${index}`}
                 align={headerAlign}
                 rowSpan={3}
                 onClick={() => onClickHeader && onClickHeader(header)}
@@ -92,18 +92,21 @@ export const HorizontalTable = ({
         <tr>
           {headers.flatMap((header) =>
             header.children
-              ? header.children.map((child) =>
+              ? header.children.map((child, idx) =>
                   child.grandChild ? (
                     // 1) 두번째 헤더 영역의 하위 자식 요소가 있는 경우
                     <th
-                      key={child.key}
+                      key={`${child.key}-${idx}`}
                       colSpan={grandChildCells[child.key] || 1}
                     >
                       {child.value}
                     </th>
                   ) : (
                     // 2) 두번째 헤더 영역의 하위 자식 요소가 없는 경우
-                    <th key={child.key} rowSpan={childrenCells[header.key]}>
+                    <th
+                      key={`${child.key}-${idx}`}
+                      rowSpan={childrenCells[header.key]}
+                    >
                       {child.value}
                     </th>
                   )
@@ -117,8 +120,8 @@ export const HorizontalTable = ({
             header.children
               ? header.children.map((child) =>
                   child.grandChild
-                    ? child.grandChild.map((grand: any) => (
-                        <th key={grand.key}>{grand.value}</th>
+                    ? child.grandChild.map((grand: any, i) => (
+                        <th key={`${grand.key}-${i}`}>{grand.value}</th>
                       ))
                     : []
                 )
@@ -131,12 +134,12 @@ export const HorizontalTable = ({
   const renderHorizontalContents = (items: DataItem[]) => {
     return items.length !== 0 ? (
       // 1) 컨텐츠(데이터)가 있는 경우
-      items.map((item) => (
-        <tr key={item.key}>
-          {headerKeys.map((key: any) => {
+      items.map((item, index) => (
+        <tr key={`${item.key}-${index}`}>
+          {headerKeys.map((key: any, idx) => {
             return (
               <td
-                key={key}
+                key={`${key}-${idx}`}
                 align={contentsAlign}
                 onClick={() => onClickRow && onClickRow(item)}
               >
@@ -159,12 +162,8 @@ export const HorizontalTable = ({
     <HorizontalTableScroll>
       <HorizontalTableForm className={className}>
         {colgroup && <colgroup>{colgroup}</colgroup>}
-        <Thead headerAlign={headerAlign}>
-          {renderHorizontalHeader(headers)}
-        </Thead>
-        <Tbody contentsAlign={contentsAlign}>
-          {renderHorizontalContents(items)}
-        </Tbody>
+        <Thead align={headerAlign}>{renderHorizontalHeader(headers)}</Thead>
+        <Tbody align={contentsAlign}>{renderHorizontalContents(items)}</Tbody>
         {footer && <Tfoot>{footer}</Tfoot>}
       </HorizontalTableForm>
     </HorizontalTableScroll>
@@ -192,7 +191,7 @@ const HorizontalTableForm = styled.table`
     font-size: 13px;
   }
 `;
-const Thead = styled.thead<{ headerAlign: string }>`
+const Thead = styled.thead<{ align: string }>`
   position: sticky;
   top: 0;
   z-index: 99;
@@ -201,9 +200,9 @@ const Thead = styled.thead<{ headerAlign: string }>`
   tr {
     th {
       text-align: ${(props) =>
-        props.headerAlign === "center"
+        props.align === "center"
           ? "center"
-          : props.headerAlign === "left"
+          : props.align === "left"
             ? "left"
             : "right"};
       border-top: 1px solid ${({ theme }) => theme.color.gray200};
@@ -220,7 +219,7 @@ const Thead = styled.thead<{ headerAlign: string }>`
     }
   }
 `;
-const Tbody = styled.tbody<{ contentsAlign: string }>`
+const Tbody = styled.tbody<{ align: string }>`
   position: relative;
   background: ${({ theme }) => theme.color.white};
 
@@ -229,9 +228,9 @@ const Tbody = styled.tbody<{ contentsAlign: string }>`
 
     td {
       text-align: ${(props) =>
-        props.contentsAlign === "center"
+        props.align === "center"
           ? "center"
-          : props.contentsAlign === "left"
+          : props.align === "left"
             ? "left"
             : "right"};
       border-top: 1px solid ${({ theme }) => theme.color.gray200};
