@@ -4,7 +4,6 @@ import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
 
 // style
-import "./index.css";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyle } from "src/styles/GlobalStyle";
 import theme from "src/styles/theme";
